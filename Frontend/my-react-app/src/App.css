@@ -1,0 +1,248 @@
+/* src/App.css - Full stylesheet */
+
+/* ---------- Reset ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ---------- Root & layout ---------- */
+:root {
+  --bg: #f6f7fb;
+  --panel-bg: #fff;
+  --muted: #f3f4f6;
+  --accent: #0b0b0b;
+  --success: #0b8a1e;
+  --danger: #c02424;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+.app-root {
+  padding: 12px;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #111;
+  background: var(--bg);
+  height: 100vh; /* fill viewport */
+  overflow: hidden;
+}
+
+/* two columns layout */
+.columns {
+  display: flex;
+  gap: 16px;
+  align-items: stretch; /* make both columns equal height */
+  height: calc(100% - 24px); /* account for app-root padding */
+}
+
+/* generic panel */
+.column {
+  background: var(--panel-bg);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* allow children to shrink in flex layouts */
+}
+
+/* interviewer / candidate widths */
+.interviewer-col {
+  width: 45%;
+  min-width: 360px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.candidate-col {
+  width: 55%;
+  min-width: 420px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* panel title */
+.panel-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* ---------- INTERVIEWER AVATAR (fills left column) ---------- */
+
+/* avatar container should fill remaining vertical space */
+.avatar-wrap {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000; /* fallback during loading */
+  position: relative;
+  display: block;
+}
+
+/* ensure react-three-fiber canvas and wrappers fill the container */
+.avatar-wrap .avatar-screen,
+.avatar-wrap .avatar-screen > div,
+.avatar-wrap .avatar-screen canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* background image should cover the whole plane visually (plane scale handled in component) */
+.avatar-wrap .full-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* keep controls on top of avatar area if needed */
+.avatar-wrap .controls-overlay {
+  position: absolute;
+  z-index: 30;
+  left: 12px;
+  top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+/* small helper center class */
+.avatar-wrap .avatar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* transcripts and boxes */
+.transcript.small {
+  margin-top: 10px;
+}
+.box-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.box-body {
+  background: var(--muted);
+  padding: 10px;
+  border-radius: 6px;
+  height: 84px;
+  overflow-y: auto;
+  color: #111827;
+}
+
+/* simple controls area */
+.controls {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ---------- CANDIDATE PANEL (canvas-driven) ---------- */
+.candidate-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  min-height: 0; /* important for flex children to not overflow */
+}
+
+/* Canvas container: fills the candidate column vertically */
+.video-container-canvas {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto; /* stretch to fill column */
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Visible overlay canvas that we draw the full video frame onto */
+.overlay-canvas-visible {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* CSS scaling for visual cover */
+  background: transparent;
+  z-index: 1;
+}
+
+/* Hidden video used only as frame source */
+.candidate-video-hidden {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* placeholder shown when camera stopped */
+.camera-placeholder {
+  position: absolute;
+  z-index: 2;
+  color: #ddd;
+  text-align: center;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* candidate controls (below the canvas) */
+.candidate-controls {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ---------- Buttons & utilities ---------- */
+button {
+  background: var(--accent);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.08);
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform .06s ease, opacity .12s ease;
+}
+button:hover { transform: translateY(-1px); }
+button:active { transform: translateY(0); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* smaller utility text */
+.small { font-size: 13px; }
+.status-on { color: var(--success); font-weight: 700; }
+.status-off { color: var(--danger); font-weight: 700; }
+
+/* fade animation */
+.fade-in { animation: fadeIn 350ms ease both; }
+.hidden { display: none; }
+
+/* ---------- Responsive tweaks ---------- */
+@media (max-width: 980px) {
+  .columns { flex-direction: column; height: auto; }
+  .interviewer-col, .candidate-col { width: 100%; min-width: 0; height: auto; }
+  .avatar-wrap { height: 320px; }
+  .video-container-canvas { height: 320px; }
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
